@@ -1,7 +1,7 @@
 package br.com.bfs.api.services;
 
-import br.com.bfs.api.model.Product;
 import br.com.bfs.api.model.Category;
+import br.com.bfs.api.model.Product;
 import br.com.bfs.api.repository.CategoryRepository;
 import br.com.bfs.api.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,9 @@ public class ProductService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+
+    private Double reviewRate;
 
     public List<Product> retornarTodosOsProdutos() {
         return repositorio.findAll();
@@ -42,8 +45,17 @@ public class ProductService {
         repositorio.deleteById(id);
     }
 
+
+    public List<Product> getAll() {
+        List<Product> products = repositorio.findAll();
+        for (Product product : products) {
+            calcularNotaDoProduto(product);
+        }
+        return repositorio.findAll();
+    }
+
+    private void calcularNotaDoProduto(Product product) {
+    }
 }
-
-
 
 
