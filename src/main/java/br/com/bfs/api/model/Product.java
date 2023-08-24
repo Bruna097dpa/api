@@ -1,5 +1,8 @@
 package br.com.bfs.api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -31,6 +34,33 @@ public class Product extends AbstractEntity{
     )
     private Collection<Category> categories;
 
+    @OneToMany(mappedBy ="product")
+    @JsonManagedReference
+    private Collection<Review> reviews;
+    
+
+    private Double reviewRate;
+
+    public Product calcularNotaDoProduto(Product product){
+        double nota = 0;
+        if( !CollectionUtils.isEmpty(product.getReviews())){
+            for( Review review : product.getReviews() ){
+                nota += review.getRate();
+            }
+
+            nota /= (double)product.getReviews().size();
+        }
+        product.setReviewRate(nota);
+        return product;
+    }
+
+    public Collection<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Collection<Review> reviews) {
+        this.reviews = reviews;
+    }
 
     public Long getId() {
         return id;
@@ -78,5 +108,13 @@ public class Product extends AbstractEntity{
 
     public void setCategories(Collection<Category> categories) {
         this.categories = categories;
+    }
+
+    public void setReviewRate(double reviewRate) {
+        this.reviewRate = reviewRate;
+    }
+
+    public double getReviewRate() {
+        return reviewRate;
     }
 }
