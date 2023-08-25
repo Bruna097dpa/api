@@ -2,10 +2,12 @@ package br.com.bfs.api.services;
 
 import br.com.bfs.api.model.Category;
 import br.com.bfs.api.model.Product;
+import br.com.bfs.api.model.Review;
 import br.com.bfs.api.repository.CategoryRepository;
 import br.com.bfs.api.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,9 @@ public class ProductService {
     private Double reviewRate;
 
     public List<Product> retornarTodosOsProdutos() {
-        return repositorio.findAll();
+List<Product> products=repositorio.findAll();
+for (Product product:products) {calcularNotaDoProduto(product);}
+        return products;
     }
 
     public Product retornarProdutoPorId(Long id) {
@@ -51,10 +55,20 @@ public class ProductService {
         for (Product product : products) {
             calcularNotaDoProduto(product);
         }
-        return repositorio.findAll();
+        return products;
     }
 
-    private void calcularNotaDoProduto(Product product) {
+    public Product calcularNotaDoProduto(Product product){
+        double nota = 0;
+        if( !CollectionUtils.isEmpty(product.getReviews())){
+            for( Review review : product.getReviews() ){
+                nota += review.getRate();
+            }
+
+            nota /= (double)product.getReviews().size();
+        }
+        product.setReviewRate(nota);
+        return product;
     }
 }
 
