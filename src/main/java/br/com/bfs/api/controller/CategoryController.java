@@ -46,7 +46,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<Category> atualizarCategoria(@RequestBody Category category, @PathVariable Long id){
         try {
-            Category categoriaNoBancoDeDados = categoryService.retornarCategoriaPorId(id);
+            categoryService.retornarCategoriaPorId(id);
             category.setId(id);
             categoryService.salvarCategoria(category);
             return new ResponseEntity<>(category, HttpStatus.OK);

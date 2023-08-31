@@ -2,6 +2,8 @@ package br.com.bfs.api.controller;
 
 import br.com.bfs.api.config.JwtTokenUtil;
 import br.com.bfs.api.dto.UserDto;
+import br.com.bfs.api.exception.AuthenticateException;
+import br.com.bfs.api.model.User;
 import br.com.bfs.api.payload.JwtRequest;
 import br.com.bfs.api.payload.JwtResponse;
 import br.com.bfs.api.services.JwtUserDetailsService;
@@ -12,7 +14,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
@@ -28,7 +33,7 @@ public class AuthController {
     private JwtUserDetailsService userDetailsService;
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
@@ -40,17 +45,15 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<?> saveUser(@RequestBody UserDto user){
+    public ResponseEntity<User> saveUser(@RequestBody UserDto user){
         return ResponseEntity.ok(userDetailsService.save(user));
     }
 
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+        } catch (DisabledException | BadCredentialsException e) {
+            throw new AuthenticateException();
         }
     }
 

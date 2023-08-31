@@ -19,7 +19,7 @@ public class ReviewService {
         return repositorio.findAll();
     }
 
-    public Review RetornarReviewPorId(Long id) {
+    public Review retornarReviewPorId(Long id) {
         return repositorio.findById(id).orElseThrow();
     }
 

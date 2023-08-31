@@ -22,7 +22,7 @@ public class ProductService {
     CategoryRepository categoryRepository;
 
 
-    private Double reviewRate;
+
 
     public List<Product> retornarTodosOsProdutos() {
 List<Product> products=repositorio.findAll();
@@ -50,13 +50,6 @@ for (Product product:products) {calcularNotaDoProduto(product);}
     }
 
 
-    public List<Product> getAll() {
-        List<Product> products = repositorio.findAll();
-        for (Product product : products) {
-            calcularNotaDoProduto(product);
-        }
-        return products;
-    }
 
     public Product calcularNotaDoProduto(Product product){
         double nota = 0;
@@ -65,7 +58,7 @@ for (Product product:products) {calcularNotaDoProduto(product);}
                 nota += review.getRate();
             }
 
-            nota /= (double)product.getReviews().size();
+            nota /= product.getReviews().size();
         }
         product.setReviewRate(nota);
         return product;

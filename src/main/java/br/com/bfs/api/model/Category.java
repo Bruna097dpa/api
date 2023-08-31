@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "category")
-public class Category extends AbstractEntity{
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

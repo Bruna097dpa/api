@@ -1,14 +1,13 @@
 package br.com.bfs.api.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
 @Table(name = "products")
-public class Product extends AbstractEntity{
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,18 +40,6 @@ public class Product extends AbstractEntity{
 
     private Double reviewRate;
 
-    public Product calcularNotaDoProduto(Product product){
-        double nota = 0;
-        if( !CollectionUtils.isEmpty(product.getReviews())){
-            for( Review review : product.getReviews() ){
-                nota += review.getRate();
-            }
-
-            nota /= (double)product.getReviews().size();
-        }
-        product.setReviewRate(nota);
-        return product;
-    }
 
     public Collection<Review> getReviews() {
         return reviews;
